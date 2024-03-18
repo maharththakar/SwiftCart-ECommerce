@@ -14,11 +14,13 @@ connectDB();
 
 // Routes import
 const authRoute = require("./routes/auth");
+const userRoute = require("./routes/user");
 
 app.use(morgan("dev"));
 app.use(cors());
 app.use(express.json());
 app.use("/api/auth", authRoute);
+app.use("/api/users", userRoute);
 
 app.listen(PORT, () => {
   console.log(`Server is running in ${process.env.NODE_ENV} on port ${PORT}`);
