@@ -62,11 +62,8 @@ yarn-debug.log*
 yarn-error.log*
 
 
-
-The .gitignore file in a React app is used to specify intentionally untracked files that Git should ignore. It helps prevent sensitive or unnecessary files from being accidentally committed to your Git repository. Here's a typical .gitignore file for a React app:
-
 plaintext
-Copy code
+
 # Dependency directories
 node_modules/
 
