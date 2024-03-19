@@ -1,5 +1,7 @@
 const jwt = require("jsonwebtoken");
 
+// TODO: ensuring the user isVerified by clicking on the email link
+
 const verifyToken = (req, res, next) => {
   const authHeader = req.headers.token;
   if (authHeader) {
