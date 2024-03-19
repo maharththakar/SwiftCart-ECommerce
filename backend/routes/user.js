@@ -5,6 +5,7 @@ const {
   verifyTokenAndAdmin,
 } = require("./verifyToken");
 const bcrypt = require("bcrypt");
+const sendEmail = require("../utils/sendEmail");
 
 const router = require("express").Router();
 
@@ -20,8 +21,9 @@ router.get("/:id", verifyTokenAndAuthorization, async (req, res) => {
   }
 });
 
-// @desc update password by user
+// @desc update password by user after login
 // @route PUT /api/users/updatePassword/:id
+// FIXME:  send email that you updated password
 router.put(
   "/updatePassword/:id",
   verifyTokenAndAuthorization,
@@ -31,6 +33,14 @@ router.put(
       const updatedUser = await User.findByIdAndUpdate(req.params.id, {
         $set: { password: hashedPassword },
       });
+
+      // send email
+      const options = {
+        email: updatedUser.email,
+        subject: "Password Updated",
+        message: "Your password has been updated successfully",
+      };
+      await sendEmail(options);
 
       res.status(200).json(updatedUser);
     } catch (err) {
@@ -64,5 +74,7 @@ router.get("/", verifyTokenAndAdmin, async (req, res) => {
     res.status(500).json(err);
   }
 });
+
+// TODO: different admin apis and logic for admin page
 
 module.exports = router;

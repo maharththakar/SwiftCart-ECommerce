@@ -8,7 +8,12 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  phoneNumber: { type: Number, required: true, unique: true },
+  phoneNumber: {
+    type: Number,
+    required: true,
+    unique: true,
+  },
+
   defaultAddress: {
     type: String,
     required: true,
@@ -20,6 +25,10 @@ const UserSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now,
+  },
+  isVerified: {
+    type: Boolean,
+    default: false,
   },
 });
 
