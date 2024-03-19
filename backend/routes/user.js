@@ -23,7 +23,6 @@ router.get("/:id", verifyTokenAndAuthorization, async (req, res) => {
 
 // @desc update password by user after login
 // @route PUT /api/users/updatePassword/:id
-// FIXME:  send email that you updated password
 router.put(
   "/updatePassword/:id",
   verifyTokenAndAuthorization,
