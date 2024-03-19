@@ -1,4 +1,5 @@
 const express = require("express");
+const cookieParser = require("cookie-parser");
 const app = express();
 const PORT = process.env.PORT || 4000;
 const mongoose = require("mongoose");
@@ -19,6 +20,7 @@ const userRoute = require("./routes/user");
 app.use(morgan("dev"));
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 app.use("/api/auth", authRoute);
 app.use("/api/users", userRoute);
 

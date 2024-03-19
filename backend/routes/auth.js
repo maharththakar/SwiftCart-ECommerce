@@ -2,6 +2,7 @@ const router = require("express").Router();
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken"); // to create a token
+const cookieParser = require("cookie-parser");
 
 // @desc   Register a new user
 // @route  POST /api/auth/register
@@ -64,5 +65,16 @@ router.post("/login", async (req, res) => {
     res.status(500).json(err);
   }
 });
+
+// // @desc Logout a user
+// // @route POST /api/auth/logout
+// router.get("/logout", verifyTokenAndAuthorization, (req, res) => {
+//   res
+//     .cookie("token", "", {
+//       httpOnly: true,
+//       expires: new Date(Date.now()),
+//     })
+//     .send("Logged out");
+// });
 
 module.exports = router;
