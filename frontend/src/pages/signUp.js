@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import validator from "validator";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 const SignUp = () => {
   // ============= Initial State Start here =============
@@ -60,7 +61,7 @@ const SignUp = () => {
   };
   // ================= Email Validation End here ===============
 
-  const handleSignUp = (e) => {
+  const handleSignUp = async (e) => {
     e.preventDefault();
     if (checked) {
       if (!clientName) {
@@ -101,15 +102,37 @@ const SignUp = () => {
         defaultpin &&
         password.length >= 8
       ) {
-        setSuccessMsg(
-          `Hello dear ${clientName}, Welcome you to OREBI Admin panel. We received your Sign up request. We are processing to validate your access. Till then stay connected and additional assistance will be sent to you by your mail at ${email}`
-        );
-        setClientName("");
-        setEmail("");
-        setPhone("");
-        setPassword("");
-        setDefaultaddress("");
-        setDefaultpin("");
+        try {
+          // Make POST request to backend API
+          const response = await axios.post(
+            "http://localhost:4000/api/auth/register",
+            {
+              name: clientName,
+              email: email,
+              password: password,
+              phoneNumber: phone,
+              defaultAddress: defaultaddress,
+              defaultPin: defaultpin,
+            }
+          );
+          // Check if registration was successful
+          if (response.status === 201) {
+            setSuccessMsg(
+              `Hello dear ${clientName}, Mail for verification of the ${email} is sent. Please click on the link provided in the email to verify the same.`
+            );
+            // Clear form fields after successful registration
+            setClientName("");
+            setEmail("");
+            setPassword("");
+            setPhone("");
+            setDefaultaddress("");
+            setDefaultpin("");
+          } else {
+            console.error("Registration error:", response);
+          }
+        } catch (error) {
+          console.error("Registration error:", error);
+        }
       }
     }
   };
@@ -260,7 +283,7 @@ const SignUp = () => {
                     type="checkbox"
                   />
                   <p className="text-sm text-primeColor">
-                    I agree to the OREBI{" "}
+                    I agree to the SwiftCart{" "}
                     <span className="text-blue-500">Terms of Service </span>and{" "}
                     <span className="text-blue-500">Privacy Policy</span>.
                   </p>
@@ -276,7 +299,7 @@ const SignUp = () => {
                   Create Account
                 </button>
                 <p className="text-sm text-center font-titleFont font-medium">
-                  Don't have an Account?{" "}
+                  Already have an account?{" "}
                   <Link to="/signin">
                     <span className="hover:text-blue-600 duration-300">
                       Sign in
