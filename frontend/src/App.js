@@ -6,24 +6,24 @@ import {
   Route,
   ScrollRestoration,
 } from "react-router-dom";
-import './App.css';
+import "./App.css";
+
+import SignIn from "./pages/signin";
+import SignUp from "./pages/signUp";
+
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route>
+      <Route path="/signin" element={<SignIn />}></Route>
+      <Route path="/signup" element={<SignUp />}></Route>
+    </Route>
+  )
+);
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="font-bodyFont">
+      <RouterProvider router={router} />
     </div>
   );
 }
