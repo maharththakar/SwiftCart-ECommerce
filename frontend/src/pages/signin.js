@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 const SignIn = () => {
   // ============= Initial State Start here =============
@@ -23,7 +24,7 @@ const SignIn = () => {
     setErrPassword("");
   };
   // ============= Event Handler End here ===============
-  const handleSingIn = (e) => {
+  const handleSingIn = async (e) => {
     e.preventDefault();
 
     if (!email) {
@@ -35,9 +36,44 @@ const SignIn = () => {
     }
     // ============== Getting the value ==============
     if (email && password) {
-      setSuccessMsg(
-        `Hello dear, Thank you for your attempt. We are processing to validate your access. Till then stay connected and additional assistance will be sent to you by your mail at ${email}`
-      );
+      try {
+        const response = await axios.post(
+          "http://localhost:4000/api/auth/login",
+          {
+            email,
+            password,
+          }
+        );
+        if (
+          response.status === 404 ||
+          response.status === 400 ||
+          response.status === 500
+        ) {
+          const responseData = await response.data;
+          alert(JSON.stringify(responseData));
+        } else if (response.status === 200) {
+          let responseData;
+          try {
+            responseData = await response.data;
+          } catch (error) {
+            console.error("Error parsing JSON response:", error);
+            // Handle the non-JSON response here
+            return;
+          }
+
+          // Proceed with parsing JSON response data and further processing
+          const { accessToken, user } = responseData;
+          console.log(accessToken, user);
+          setSuccessMsg(
+            `Hello dear, Thank you for your attempt. We are processing to validate your access. Till then stay connected and additional assistance will be sent to you by your mail at ${email}`
+          );
+        }
+      } catch (error) {
+        console.log(error);
+      }
+
+      setSuccessMsg("");
+
       setEmail("");
       setPassword("");
     }
