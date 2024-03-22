@@ -92,3 +92,6 @@ npm-debug.log*
 # Dependency lock files
 package-lock.json
 yarn.lock
+
+backend/notes-backend.txt
+frontend/notes-frontend.txt
