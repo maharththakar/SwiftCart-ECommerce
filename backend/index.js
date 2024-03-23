@@ -9,6 +9,7 @@ const morgan = require("morgan");
 dotenv.config({ path: "./config/config.env" }); // Load config file
 const cors = require("cors"); // to allow cross-origin requests
 const connectDB = require("./config/db");
+const compression = require("compression");
 
 // Connect to DB
 connectDB();
@@ -22,6 +23,7 @@ app.use(morgan("dev"));
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
+app.use(compression()); // Compress all routes
 app.use("/api/auth", authRoute);
 app.use("/api/users", userRoute);
 app.use("/api/products", productRoute);
