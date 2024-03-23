@@ -5,14 +5,14 @@ const {
   verifyTokenAndAdmin,
 } = require("./verifyToken");
 const router = require("express").Router();
-const apiFeatures = require("../utils/apiFeatures");
 const ApiFeatures = require("../utils/apiFeatures");
-
-// TODO: add images logic in all this
+const reviews = require("../models/reviews");
 
 // @desc Create a product by admin
 // @route POST /api/products
 router.post("/", verifyTokenAndAdmin, async (req, res) => {
+  // TODO: add images logic in all this
+
   const newProduct = new Product(req.body);
 
   try {
@@ -91,6 +91,9 @@ router.get("/all", verifyTokenAndAdmin, async (req, res) => {
   }
 });
 
+
+// TODO: review only can be made by that user that has ordered the product
+// TODO: this after order logic has been implemented
 // TODO: create a new review or update a review logic
 // TODO: get all reviews for a product logic
 // TODO: delete a review logic
