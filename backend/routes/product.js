@@ -5,6 +5,8 @@ const {
   verifyTokenAndAdmin,
 } = require("./verifyToken");
 const router = require("express").Router();
+const apiFeatures = require("../utils/apiFeatures");
+const ApiFeatures = require("../utils/apiFeatures");
 
 // TODO: add images logic in all this
 
@@ -60,31 +62,22 @@ router.get("/find/:id", async (req, res) => {
   }
 });
 
-// TODO: modify this to handle pagination and filters
 // @desc Get all products by anyone at homepage
 // @route GET /api/products
 router.get("/", async (req, res) => {
-  const qNew = req.query.new;
-  const qCategory = req.query.category;
-  try {
-    let products;
+  const resPerPage = 8;
+  const apiFeatures = new ApiFeatures(Product.find(), req.query)
+    .search()
+    .filter()
+    .pagination(resPerPage);
+  let products = await apiFeatures.query;
+  // apiFeatures.query = Product.find() = this.query
+  // apiFeatures return "this" object
 
-    if (qNew) {
-      products = await Product.find().sort({ createdAt: -1 }).limit(1);
-    } else if (qCategory) {
-      products = await Product.find({
-        categories: {
-          $in: [qCategory],
-        },
-      });
-    } else {
-      products = await Product.find();
-    }
-
-    res.status(200).json(products);
-  } catch (err) {
-    res.status(500).json(err);
-  }
+  res.status(200).json({
+    products,
+    resPerPage,
+  });
 });
 
 // @desc Get all products by admin without any filters
