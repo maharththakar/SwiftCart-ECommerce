@@ -10,9 +10,17 @@ dotenv.config({ path: "./config/config.env" }); // Load config file
 const cors = require("cors"); // to allow cross-origin requests
 const connectDB = require("./config/db");
 const compression = require("compression");
+const cloudinary = require("cloudinary").v2;
 
 // Connect to DB
 connectDB();
+
+// Cloudinary config
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 // Routes import
 const authRoute = require("./routes/auth");
