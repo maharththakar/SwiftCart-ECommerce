@@ -19,7 +19,7 @@ class ApiFeatures {
   filter() {
     const queryCopy = { ...this.queryStr };
 
-    const removeFields = ["keyword", "limit", "page"];
+    const removeFields = ["keyword", "limit", "page", "sort"];
     removeFields.forEach((el) => delete queryCopy[el]);
 
     let queryStr = JSON.stringify(queryCopy);
@@ -27,6 +27,15 @@ class ApiFeatures {
     console.log(queryStr);
 
     this.query = this.query.find(JSON.parse(queryStr));
+    return this;
+  }
+  sort() {
+    if (this.queryStr.sort) {
+      const sortBy = this.queryStr.sort === "price" ? "price" : "-price";
+      this.query = this.query.sort(sortBy);
+    } else {
+      this.query = this.query.sort("price"); // Default sort by ascending price
+    }
     return this;
   }
 

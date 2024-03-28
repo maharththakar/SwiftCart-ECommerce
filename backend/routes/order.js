@@ -6,12 +6,23 @@ const {
   verifyTokenAndAdmin,
 } = require("./verifyToken");
 const router = require("express").Router();
+const Product = require("../models/product");
 
 // @desc Create a new order
 // @route POST /api/orders
 router.post("/", verifyToken, async (req, res) => {
   const newOrder = new Order(req.body);
 
+  try {
+    // decrement stock and save order
+    for (let item of newOrder.products) {
+      let product = await Product.findOne({ _id: item.productId });
+      product.Stock -= item.quantity;
+      await product.save();
+    }
+  } catch (error) {
+    return res.status(500).json(error);
+  }
   try {
     const savedOrder = await newOrder.save();
     res.status(201).json(savedOrder);
@@ -59,6 +70,17 @@ router.delete("/:id", verifyTokenAndAdmin, async (req, res) => {
 router.get("/find/:userId", verifyTokenAndAuthorization, async (req, res) => {
   try {
     const orders = await Order.find({ userId: req.params.userId });
+    res.status(200).json(orders);
+  } catch (error) {
+    res.status(500).json(err);
+  }
+});
+
+// @desc Get all orders
+// @route GET /api/orders
+router.get("/", verifyTokenAndAdmin, async (req, res) => {
+  try {
+    const orders = await Order.find();
     res.status(200).json(orders);
   } catch (error) {
     res.status(500).json(err);

@@ -69,6 +69,7 @@ router.get("/", async (req, res) => {
   const apiFeatures = new ApiFeatures(Product.find(), req.query)
     .search()
     .filter()
+    .sort()
     .pagination(resPerPage);
   let products = await apiFeatures.query;
   // apiFeatures.query = Product.find() = this.query
