@@ -7,6 +7,7 @@ const {
 } = require("./verifyToken");
 const router = require("express").Router();
 const Product = require("../models/product");
+const sendEmail = require("../utils/sendEmail");
 
 // @desc Create a new order
 // @route POST /api/orders
@@ -24,7 +25,30 @@ router.post("/", verifyToken, async (req, res) => {
     return res.status(500).json(error);
   }
   try {
-    const savedOrder = await newOrder.save();
+    const savedOrder1 = await newOrder.save();
+    const savedOrder = await Order.findById(savedOrder1._id).populate(
+      "products.productId",
+      "name"
+    );
+    const user = await User.findById(newOrder.userId);
+    const options = {
+      email: user.email,
+      subject: "Order Placed Successfully",
+      message: `Dear ${
+        user.name
+      },\n\n We are excited to inform you that your order has been successfully placed!\n\n Order ID: ${
+        savedOrder._id
+      }\n\n Products:\n - ${savedOrder.products
+        .map(
+          (product) =>
+            `${product.productId.name} - Quantity: ${product.quantity}`
+        )
+        .join(
+          "\n- "
+        )}\n\n Thank you for choosing our service. We'll keep you updated on the status of your order.\n\n Best Regards,\n SwiftCart`,
+    };
+    await sendEmail(options);
+
     res.status(201).json(savedOrder);
   } catch (error) {
     res.status(500).json(error);
@@ -67,9 +91,13 @@ router.delete("/:id", verifyTokenAndAdmin, async (req, res) => {
 
 // @desc Get user's orders
 // @route GET /api/orders/find/:userId
+// TODO: apiFeatures for this pagination and sorting if time permits
 router.get("/find/:userId", verifyTokenAndAuthorization, async (req, res) => {
   try {
-    const orders = await Order.find({ userId: req.params.userId });
+    const orders = await Order.find({ userId: req.params.userId }).sort({
+      createdAt: "desc",
+    });
+
     res.status(200).json(orders);
   } catch (error) {
     res.status(500).json(err);
